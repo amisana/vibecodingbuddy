@@ -32,7 +32,6 @@ export default function CopierPage() {
   const [projectDescription, setProjectDescription] = useState('');
   const [markdown, setMarkdown] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     rootDirectory: true,
     fileSelection: false,
@@ -556,8 +555,18 @@ export default function CopierPage() {
       
       setMarkdown(md);
       
-      // Open the modal to display the markdown
-      setIsModalOpen(true);
+      // Make sure the generate section is expanded
+      setExpandedSections(prev => ({
+        ...prev,
+        generate: true
+      }));
+      
+      // Scroll to the markdown content after a short delay to let the DOM update
+      setTimeout(() => {
+        if (markdownRef.current) {
+          markdownRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     } catch (error) {
       console.error('Error generating markdown:', error);
       alert('An error occurred while generating the markdown. Please try again.');
@@ -596,16 +605,6 @@ export default function CopierPage() {
       markdownRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [markdown]);
-
-  // Function to open the modal with generated markdown
-  const openMarkdownModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
-  
-  // Function to close the modal
-  const closeMarkdownModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
 
   // Function to toggle individual accordion sections
   const toggleSection = useCallback((section: keyof typeof expandedSections) => {
@@ -1099,7 +1098,7 @@ export default function CopierPage() {
                     ) : (
                       <>
                         <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                         </svg>
                         Generate Markdown
                       </>
@@ -1108,74 +1107,42 @@ export default function CopierPage() {
                 </div>
                 
                 {markdown && (
-                  <div className="mt-6 flex justify-center">
-                    <button
-                      onClick={openMarkdownModal}
-                      className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors inline-flex items-center"
-                    >
-                      <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      View Generated Markdown
-                    </button>
+                  <div className="mt-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold">Generated Markdown</h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={copyToClipboard}
+                          className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
+                        >
+                          <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                          </svg>
+                          Copy
+                        </button>
+                        <button
+                          onClick={downloadMarkdown}
+                          className="flex items-center text-green-500 hover:text-green-600 transition-colors"
+                        >
+                          <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                          Download
+                        </button>
+                      </div>
+                    </div>
+                    <div className="border rounded-lg overflow-hidden">
+                      <textarea
+                        ref={markdownRef}
+                        value={markdown}
+                        readOnly
+                        className="w-full h-96 p-4 font-mono text-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 resize-none"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* Markdown Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-            {/* Modal Header */}
-            <div className="flex justify-between items-center p-6 border-b dark:border-gray-700">
-              <h3 className="text-xl font-semibold">Generated Markdown</h3>
-              <div className="flex gap-2">
-                <button
-                  onClick={copyToClipboard}
-                  className="flex items-center text-blue-500 hover:text-blue-600 transition-colors px-2 py-1"
-                  title="Copy to clipboard"
-                >
-                  <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                  </svg>
-                  Copy
-                </button>
-                <button
-                  onClick={downloadMarkdown}
-                  className="flex items-center text-green-500 hover:text-green-600 transition-colors px-2 py-1"
-                  title="Download as .md file"
-                >
-                  <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Download
-                </button>
-                <button
-                  onClick={closeMarkdownModal}
-                  className="flex items-center text-gray-500 hover:text-gray-600 transition-colors ml-4 px-2 py-1"
-                  title="Close modal"
-                >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto flex-1">
-              <textarea
-                ref={markdownRef}
-                value={markdown}
-                readOnly
-                className="w-full h-full p-4 border rounded font-mono text-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 resize-none"
-              />
-            </div>
           </div>
         </div>
       )}
