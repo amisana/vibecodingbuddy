@@ -1,16 +1,30 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import Image from 'next/image';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+// Remove unused Image import since we're using inline SVGs
+// import Image from 'next/image';
 
 type FileItem = {
   file: File;
   path: string;
 };
 
-// Add proper typing for FileSystemDirectoryHandle if missing
-interface FileSystemDirectoryHandleWithValues extends FileSystemDirectoryHandle {
-  values(): AsyncIterable<FileSystemHandle>;
+// Add proper type for FileSystemDirectoryHandle
+interface FileSystemDirectoryHandle extends FileSystemHandle {
+  kind: 'directory';
+  getDirectoryHandle(name: string, options?: { create?: boolean }): Promise<FileSystemDirectoryHandle>;
+  getFileHandle(name: string, options?: { create?: boolean }): Promise<FileSystemFileHandle>;
+}
+
+// Add proper type for showDirectoryPicker
+interface FileSystemDirectoryPickerOptions {
+  id?: string;
+  mode?: 'read' | 'readwrite';
+  startIn?: FileSystemHandle | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos';
+}
+
+interface Window {
+  showDirectoryPicker(options?: FileSystemDirectoryPickerOptions): Promise<FileSystemDirectoryHandle>;
 }
 
 // Add custom attributes for directory input that are not in the standard HTML spec
@@ -20,6 +34,17 @@ declare module 'react' {
     webkitdirectory?: string;
     mozdirectory?: string;
   }
+}
+
+// Add proper typing for FileSystemDirectoryHandle if missing
+interface FileSystemDirectoryHandleWithValues extends FileSystemDirectoryHandle {
+  values(): AsyncIterable<FileSystemHandle>;
+}
+
+// Add proper typing for webkitRelativePath
+interface FileWithPath extends File {
+  webkitRelativePath: string;
+  path?: string;
 }
 
 export default function CopierPage() {
@@ -65,9 +90,11 @@ export default function CopierPage() {
       // This is set when a folder is selected and contains the path relative to the selected folder
       let path = '';
       
-      if ((file as any).webkitRelativePath) {
+      // Use proper typing for file with webkitRelativePath
+      const fileWithPath = file as FileWithPath;
+      if (fileWithPath.webkitRelativePath) {
         // For directory selection, we get proper paths
-        path = (file as any).webkitRelativePath;
+        path = fileWithPath.webkitRelativePath;
       } else if (file.name) {
         // For single file selection, we just get the filename
         path = file.name;
@@ -75,8 +102,6 @@ export default function CopierPage() {
       
       // Special handling for files dropped from file explorer
       // Some browsers might include path information in the DataTransfer
-      // This is not standard, so we use any type
-      const fileWithPath = file as any;
       if (fileWithPath.path) {
         const filePath = fileWithPath.path;
         if (filePath.includes('/') || filePath.includes('\\')) {
@@ -172,8 +197,8 @@ export default function CopierPage() {
             // Get the file
             const file = await (entry as FileSystemFileHandle).getFile();
             fileItems.push({ file, path: entryPath });
-          } catch (error) {
-            console.error(`Error getting file ${entryPath}:`, error);
+          } catch (fileError) {
+            console.error(`Error getting file ${entryPath}:`, fileError);
           }
         } else if (entry.kind === 'directory') {
           // Recursively scan subdirectories
@@ -186,8 +211,8 @@ export default function CopierPage() {
           fileItems.push(...subItems);
         }
       }
-    } catch (error) {
-      console.error(`Error scanning directory ${path}:`, error);
+    } catch (scanError) {
+      console.error(`Error scanning directory ${path}:`, scanError);
     }
     
     return fileItems;
@@ -206,8 +231,8 @@ export default function CopierPage() {
       setFiles(items);
       
       setIsGenerating(false);
-    } catch (error) {
-      console.error('Error scanning root directory:', error);
+    } catch (scanError) {
+      console.error('Error scanning root directory:', scanError);
       setIsGenerating(false);
       alert('Error scanning directory. Make sure you have permission to access all files and folders.');
     }
@@ -218,7 +243,9 @@ export default function CopierPage() {
     try {
       // Check if the File System Access API is supported
       if ('showDirectoryPicker' in window) {
-        const directoryHandle = await (window as any).showDirectoryPicker({
+        // Properly typed window object with showDirectoryPicker
+        const win = window as unknown as Window;
+        const directoryHandle = await win.showDirectoryPicker({
           mode: 'readwrite',
         });
         
@@ -242,8 +269,8 @@ export default function CopierPage() {
             
             // Set the files
             setFiles(items);
-          } catch (error) {
-            console.error('Error during initial scan:', error);
+          } catch (initScanError) {
+            console.error('Error during initial scan:', initScanError);
             alert('Error scanning directory. Make sure you have permission to access all files and folders.');
           } finally {
             setIsGenerating(false);
@@ -252,7 +279,7 @@ export default function CopierPage() {
       } else {
         alert('Your browser does not support the File System Access API. Please use Chrome, Edge, or another supported browser.');
       }
-    } catch (error) {
+    } catch (selectionError) {
       // User cancelled or permission denied - this is expected behavior
       console.log('Directory selection was cancelled or denied');
     }
@@ -285,7 +312,7 @@ export default function CopierPage() {
       md += `\`\`\`tree\n.\n`;
       
       // Organize files by their paths
-      const filesByPath = new Map<string, FileItem[]>();
+      const filesByDirectory: Record<string, FileItem[]> = {};
       const allDirectories = new Set<string>();
       
       // Add root directory
@@ -296,7 +323,8 @@ export default function CopierPage() {
         if (shouldIgnoreFile(file.path)) return;
         
         const pathParts = file.path.split('/');
-        const fileName = pathParts.pop() || '';
+        // Remove filename from path parts - we don't need to store it
+        pathParts.pop();
         
         // Build the full path and all parent directories
         let currentPath = '';
@@ -307,10 +335,10 @@ export default function CopierPage() {
         }
         
         // Store the file in its directory
-        if (!filesByPath.has(currentPath)) {
-          filesByPath.set(currentPath, []);
+        if (!filesByDirectory[currentPath]) {
+          filesByDirectory[currentPath] = [];
         }
-        filesByPath.get(currentPath)?.push(file);
+        filesByDirectory[currentPath]?.push(file);
       });
       
       // Convert to arrays and sort
@@ -371,7 +399,7 @@ export default function CopierPage() {
       });
       
       // Add files to the tree
-      filesByPath.forEach((dirFiles, dirPath) => {
+      Object.entries(filesByDirectory).forEach(([dirPath, dirFiles]) => {
         const parentNode = findNode(dirPath);
         if (!parentNode) return;
         
@@ -407,7 +435,7 @@ export default function CopierPage() {
       sortChildren(rootNode);
       
       // Function to print the tree
-      const printTree = (node: TreeNode, prefix = '', isLast = true, indent = '') => {
+      const printTree = (node: TreeNode, isLast = true, indent = '') => {
         if (node !== rootNode) {
           // Print the current node
           const marker = isLast ? '└── ' : '├── ';
@@ -420,7 +448,7 @@ export default function CopierPage() {
         const children = node.children;
         children.forEach((child, index) => {
           const isLastChild = index === children.length - 1;
-          printTree(child, '', isLastChild, childIndent);
+          printTree(child, isLastChild, childIndent);
         });
       };
       
@@ -547,9 +575,9 @@ export default function CopierPage() {
           
           // Add to markdown with syntax highlighting
           md += `\`\`\`${lang}\n${content}\n\`\`\`\n\n`;
-        } catch (error) {
-          console.error(`Error reading file ${item.path}:`, error);
-          md += `\`\`\`\nError reading file content: ${error instanceof Error ? error.message : 'Unknown error'}\n\`\`\`\n\n`;
+        } catch (contentError) {
+          console.error(`Error reading file ${item.path}:`, contentError);
+          md += `\`\`\`\nError reading file content: ${contentError instanceof Error ? contentError.message : 'Unknown error'}\n\`\`\`\n\n`;
         }
       }
       
@@ -567,8 +595,8 @@ export default function CopierPage() {
           markdownRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 100);
-    } catch (error) {
-      console.error('Error generating markdown:', error);
+    } catch (genError) {
+      console.error('Error generating markdown:', genError);
       alert('An error occurred while generating the markdown. Please try again.');
     } finally {
       setIsGenerating(false);
