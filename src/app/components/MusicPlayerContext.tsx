@@ -37,6 +37,8 @@ interface MusicPlayerContextType {
   handleNext: () => void;
   playerVisible: boolean;
   setPlayerVisible: (visible: boolean) => void;
+  isMinimized: boolean;
+  toggleMinimized: () => void;
   apiLoaded: boolean;
 }
 
@@ -70,6 +72,8 @@ const MusicPlayerContext = createContext<MusicPlayerContextType>({
   handleNext: () => {},
   playerVisible: true,
   setPlayerVisible: () => {},
+  isMinimized: false,
+  toggleMinimized: () => {},
   apiLoaded: false
 });
 
@@ -82,6 +86,7 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   const [currentTrackInfo, setCurrentTrackInfo] = useState<Track>(defaultTrackInfo);
   const [apiLoaded, setApiLoaded] = useState(false);
   const [apiError, setApiError] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   
   // Reference to the iframe for SoundCloud
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -94,6 +99,41 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
 
   // Timer for fake progress when using fallback
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Load saved state from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedPlayerState = localStorage.getItem('musicPlayerState');
+      if (savedPlayerState) {
+        try {
+          const state = JSON.parse(savedPlayerState);
+          if (state.playerVisible !== undefined) setPlayerVisible(state.playerVisible);
+          if (state.isMinimized !== undefined) setIsMinimized(state.isMinimized);
+        } catch (e) {
+          console.error('Error loading saved music player state', e);
+        }
+      }
+    }
+  }, []);
+
+  // Save state changes to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('musicPlayerState', JSON.stringify({
+          playerVisible,
+          isMinimized
+        }));
+      } catch (e) {
+        console.error('Error saving music player state', e);
+      }
+    }
+  }, [playerVisible, isMinimized]);
+  
+  // Toggle minimized state
+  const toggleMinimized = () => {
+    setIsMinimized(prev => !prev);
+  };
   
   // Load SoundCloud Widget API
   useEffect(() => {
@@ -374,6 +414,8 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
         handleNext,
         playerVisible,
         setPlayerVisible,
+        isMinimized,
+        toggleMinimized,
         apiLoaded
       }}
     >

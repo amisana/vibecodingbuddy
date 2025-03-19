@@ -734,14 +734,14 @@ export default function CopierPage() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span className="retro-pixel">Selecting...</span>
+                        <span className="retro-pixel text-black">Selecting...</span>
                       </>
                     ) : (
                       <>
-                        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="black">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                         </svg>
-                        <span className="retro-pixel">Select Root Folder</span>
+                        <span className="retro-pixel text-black">Select Root Folder</span>
                       </>
                     )}
                   </button>
@@ -749,7 +749,7 @@ export default function CopierPage() {
                   <div>
                     <div className="flex items-center p-3 mb-4 bg-gray-50 dark:bg-gray-800 rounded-md">
                       <div className="w-10 h-10 flex items-center justify-center text-poolteal mr-3 bg-poolbeige dark:bg-pooldark/30 rounded-full">
-                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="black">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                         </svg>
                       </div>
@@ -961,7 +961,7 @@ export default function CopierPage() {
                     {rootDirectory && (
                       <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <label className="cursor-pointer bg-poolteal hover:bg-poolteal/80 text-white py-2 px-4 rounded-md transition-colors inline-flex items-center justify-center vapor-button">
-                          <span className="retro-pixel">{files.length > 0 ? 'Add More Files' : 'Select Files'}</span>
+                          <span className="retro-pixel text-black">{files.length > 0 ? 'Add More Files' : 'Select Files'}</span>
                           <input 
                             type="file" 
                             multiple 
@@ -970,7 +970,7 @@ export default function CopierPage() {
                           />
                         </label>
                         <label className="cursor-pointer bg-transparent hover:bg-poolbeige dark:hover:bg-pooldark/40 border border-poolpink-light text-pooldark dark:text-poolbeige py-2 px-4 rounded-md transition-colors inline-flex items-center justify-center">
-                          <span className="retro-pixel">{files.length > 0 ? 'Add Folder' : 'Select Folder'}</span>
+                          <span className="retro-pixel text-black">{files.length > 0 ? 'Add Folder' : 'Select Folder'}</span>
                           <input 
                             type="file" 
                             directory=""
@@ -1044,7 +1044,7 @@ export default function CopierPage() {
                     onClick={addIgnorePattern}
                     className="px-4 py-2 bg-poolteal text-white rounded-r-md hover:bg-poolteal/80 transition-colors"
                   >
-                    <span className="retro-pixel">Add</span>
+                    <span className="retro-pixel text-black">Add</span>
                   </button>
                 </div>
                 
@@ -1127,14 +1127,14 @@ export default function CopierPage() {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
-                          <span className="retro-pixel">Generating...</span>
+                          <span className="retro-pixel text-black">Generating...</span>
                         </>
                       ) : (
                         <>
-                          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="black">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                           </svg>
-                          <span className="retro-pixel">Generate Markdown</span>
+                          <span className="retro-pixel text-black">Generate Markdown</span>
                         </>
                       )}
                     </button>
@@ -1149,19 +1149,19 @@ export default function CopierPage() {
                               onClick={copyToClipboard}
                               className="flex items-center text-poolteal hover:text-poolteal/80 transition-colors"
                             >
-                              <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="black">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                               </svg>
-                              <span className="retro-pixel">Copy</span>
+                              <span className="retro-pixel text-black">Copy</span>
                             </button>
                             <button
                               onClick={downloadMarkdown}
                               className="flex items-center text-green-500 hover:text-green-600 transition-colors"
                             >
-                              <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="black">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                               </svg>
-                              <span className="retro-pixel">Download</span>
+                              <span className="retro-pixel text-black">Download</span>
                             </button>
                           </div>
                       </div>

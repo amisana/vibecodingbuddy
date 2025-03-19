@@ -15,9 +15,8 @@
   --accent-teal: #46b3b3;
   --accent-pink: #e4a0c1;
   --accent-pink-light: #f0c5d7;
-}
-
-@theme inline {
+  
+  /* Standard CSS custom properties instead of @theme */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -346,6 +345,12 @@ body {
   letter-spacing: 0.1em;
 }
 
+.music-player-buttons {
+  display: flex;
+  gap: 2px;
+}
+
+.music-player-minimize,
 .music-player-close {
   cursor: pointer;
   width: 16px;
@@ -354,6 +359,11 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid #000;
+  font-size: 10px;
+}
+
+.music-player-close {
+  font-size: 12px;
 }
 
 .music-player-visualization {
@@ -538,4 +548,53 @@ body {
 
 .hidden {
   display: none;
+}
+
+/* Minimized player styles */
+.music-player-minimized {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  width: 180px;
+  background-color: rgba(245, 240, 232, 0.9);
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  padding: 0.4rem;
+  z-index: 50;
+}
+
+.music-player-mini-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.music-player-mini-button {
+  background: transparent;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.music-player-mini-info {
+  flex: 1;
+  font-size: 0.4rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-color-scheme: dark) {
+  .music-player-minimized {
+    background-color: rgba(12, 3, 32, 0.9);
+    color: var(--foreground);
+  }
 }

@@ -12,6 +12,8 @@ export default function MusicPlayer() {
     handleNext,
     playerVisible,
     setPlayerVisible,
+    isMinimized,
+    toggleMinimized,
     apiLoaded
   } = useMusicPlayer();
   
@@ -26,11 +28,54 @@ export default function MusicPlayer() {
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
   
+  // Minimized view
+  if (isMinimized) {
+    return (
+      <div className="music-player-minimized">
+        <div className="music-player-mini-controls">
+          <button 
+            className="music-player-mini-button" 
+            onClick={togglePlay}
+            title={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? '❚❚' : '▶'}
+          </button>
+          <div className="music-player-mini-info retro-pixel">
+            <div className="truncate">{currentTrackInfo.title}</div>
+          </div>
+          <button 
+            className="music-player-mini-button" 
+            onClick={toggleMinimized}
+            title="Maximize"
+          >
+            □
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  // Full view
   return (
     <div className="music-player">
       <div className="music-player-header">
         <div className="music-player-title">VIBE CODE FM</div>
-        <button className="music-player-close" onClick={() => setPlayerVisible(false)}>×</button>
+        <div className="music-player-buttons">
+          <button 
+            className="music-player-minimize" 
+            onClick={toggleMinimized}
+            title="Minimize"
+          >
+            _
+          </button>
+          <button 
+            className="music-player-close" 
+            onClick={() => setPlayerVisible(false)}
+            title="Close"
+          >
+            ×
+          </button>
+        </div>
       </div>
       
       <div className={`equalizer ${isPlaying ? 'playing' : ''}`}>
@@ -40,24 +85,24 @@ export default function MusicPlayer() {
       </div>
       
       <div className="music-player-channel">
-        <div>{apiLoaded ? "Majestic Casual" : "Offline Mode"}</div>
+        <div className="retro-pixel">{apiLoaded ? "Majestic Casual" : "Offline Mode"}</div>
         <div>▼</div>
       </div>
       
-      <div className="music-player-time">{formatTime(currentTime)} / {currentTrackInfo.duration}</div>
-      <div className="music-player-track">{currentTrackInfo.title}</div>
-      <div className="music-player-artist">{currentTrackInfo.artist}</div>
+      <div className="music-player-time retro-pixel">{formatTime(currentTime)} / {currentTrackInfo.duration}</div>
+      <div className="music-player-track retro-pixel">{currentTrackInfo.title}</div>
+      <div className="music-player-artist retro-pixel">{currentTrackInfo.artist}</div>
       
       <div className="music-player-controls">
-        <button className="music-player-button" onClick={handlePrev}>◂◂</button>
-        <button className="music-player-button" onClick={togglePlay}>
+        <button className="music-player-button retro-pixel" onClick={handlePrev}>◂◂</button>
+        <button className="music-player-button retro-pixel" onClick={togglePlay}>
           {isPlaying ? '❚❚' : '▶'}
         </button>
-        <button className="music-player-button" onClick={handleNext}>▸▸</button>
+        <button className="music-player-button retro-pixel" onClick={handleNext}>▸▸</button>
       </div>
       
       {!apiLoaded && (
-        <div className="text-xs mt-2 opacity-70 text-pooldark dark:text-poolbeige">
+        <div className="text-xs mt-2 opacity-70 text-pooldark dark:text-poolbeige retro-pixel">
           Running in offline mode
         </div>
       )}
