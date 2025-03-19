@@ -2,31 +2,6 @@
 
 import { useMusicPlayer } from "./MusicPlayerContext";
 
-// Add SoundCloud Widget API types
-declare global {
-  interface Window {
-    SC: {
-      Widget: {
-        (iframe: HTMLIFrameElement): any;
-        Events: {
-          READY: string;
-          PLAY_PROGRESS: string;
-          FINISH: string;
-          PLAY: string;
-          PAUSE: string;
-        };
-      };
-    };
-  }
-}
-
-interface Track {
-  title: string;
-  artist: string;
-  duration: string;
-  url?: string;
-}
-
 export default function MusicPlayer() {
   const {
     isPlaying,
@@ -36,7 +11,8 @@ export default function MusicPlayer() {
     handlePrev,
     handleNext,
     playerVisible,
-    setPlayerVisible
+    setPlayerVisible,
+    apiLoaded
   } = useMusicPlayer();
   
   if (!playerVisible) {
@@ -64,7 +40,7 @@ export default function MusicPlayer() {
       </div>
       
       <div className="music-player-channel">
-        <div>Majestic Casual</div>
+        <div>{apiLoaded ? "Majestic Casual" : "Offline Mode"}</div>
         <div>▼</div>
       </div>
       
@@ -79,6 +55,12 @@ export default function MusicPlayer() {
         </button>
         <button className="music-player-button" onClick={handleNext}>▸▸</button>
       </div>
+      
+      {!apiLoaded && (
+        <div className="text-xs mt-2 opacity-70 text-pooldark dark:text-poolbeige">
+          Running in offline mode
+        </div>
+      )}
       
       <div className="dots-pattern"></div>
     </div>

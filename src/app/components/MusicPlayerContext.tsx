@@ -2,6 +2,25 @@
 
 import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 
+// Add SoundCloud Widget API types
+declare global {
+  interface Window {
+    SC: {
+      Widget: {
+        (iframe: HTMLIFrameElement): any;
+        Events: {
+          READY: string;
+          PLAY_PROGRESS: string;
+          FINISH: string;
+          PLAY: string;
+          PAUSE: string;
+          ERROR: string;
+        };
+      };
+    };
+  }
+}
+
 interface Track {
   title: string;
   artist: string;
@@ -18,6 +37,7 @@ interface MusicPlayerContextType {
   handleNext: () => void;
   playerVisible: boolean;
   setPlayerVisible: (visible: boolean) => void;
+  apiLoaded: boolean;
 }
 
 const defaultTrackInfo: Track = {
@@ -25,6 +45,20 @@ const defaultTrackInfo: Track = {
   artist: "",
   duration: "00:00"
 };
+
+// Fallback tracks in case SoundCloud API fails
+const fallbackTracks: Track[] = [
+  {
+    title: "Majestic Casual Mix",
+    artist: "Various Artists",
+    duration: "04:30"
+  },
+  {
+    title: "Poolside Vibes",
+    artist: "Vibe Code FM",
+    duration: "03:45"
+  }
+];
 
 const MusicPlayerContext = createContext<MusicPlayerContextType>({
   isPlaying: false,
@@ -35,7 +69,8 @@ const MusicPlayerContext = createContext<MusicPlayerContextType>({
   handlePrev: () => {},
   handleNext: () => {},
   playerVisible: true,
-  setPlayerVisible: () => {}
+  setPlayerVisible: () => {},
+  apiLoaded: false
 });
 
 export function MusicPlayerProvider({ children }: { children: React.ReactNode }) {
@@ -45,6 +80,8 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   const [currentTime, setCurrentTime] = useState(0);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentTrackInfo, setCurrentTrackInfo] = useState<Track>(defaultTrackInfo);
+  const [apiLoaded, setApiLoaded] = useState(false);
+  const [apiError, setApiError] = useState(false);
   
   // Reference to the iframe for SoundCloud
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -54,102 +91,165 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   
   // Playlist URL
   const playlistUrl = "https://soundcloud.com/cameron-kiani/sets/majesticcasual";
+
+  // Timer for fake progress when using fallback
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   
   // Load SoundCloud Widget API
   useEffect(() => {
     let scriptElement: HTMLScriptElement | null = null;
+    let loadTimeoutId: NodeJS.Timeout;
+    
+    const initializeFallback = () => {
+      console.log("Falling back to mock player");
+      setApiError(true);
+      setTracks(fallbackTracks);
+      setCurrentTrackInfo(fallbackTracks[0]);
+    };
+    
+    // Set a timeout for API loading
+    loadTimeoutId = setTimeout(() => {
+      if (!apiLoaded) {
+        initializeFallback();
+      }
+    }, 5000);
     
     // Check if the script is already loaded
     const existingScript = document.querySelector('script[src="https://w.soundcloud.com/player/api.js"]');
     
-    if (!existingScript) {
-      // Create script element
-      scriptElement = document.createElement('script');
-      scriptElement.src = 'https://w.soundcloud.com/player/api.js';
-      scriptElement.async = true;
-      document.body.appendChild(scriptElement);
-    }
-    
-    // Create iframe if it doesn't exist
-    if (!iframeRef.current) {
-      const iframe = document.createElement('iframe');
-      iframe.width = "100%";
-      iframe.height = "0";
-      iframe.scrolling = "no";
-      iframe.frameBorder = "no";
-      iframe.allow = "autoplay";
-      iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(playlistUrl)}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`;
-      iframe.className = "hidden";
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
-      iframeRef.current = iframe;
+    try {
+      if (!existingScript) {
+        // Create script element
+        scriptElement = document.createElement('script');
+        scriptElement.src = 'https://w.soundcloud.com/player/api.js';
+        scriptElement.async = true;
+        
+        // Add error handling for script loading
+        scriptElement.onerror = () => {
+          console.error("Failed to load SoundCloud API");
+          initializeFallback();
+          clearTimeout(loadTimeoutId);
+        };
+        
+        document.body.appendChild(scriptElement);
+      }
+      
+      // Create iframe if it doesn't exist
+      if (!iframeRef.current) {
+        const iframe = document.createElement('iframe');
+        iframe.width = "100%";
+        iframe.height = "0";
+        iframe.scrolling = "no";
+        iframe.frameBorder = "no";
+        iframe.allow = "autoplay";
+        iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(playlistUrl)}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`;
+        iframe.className = "hidden";
+        iframe.style.display = "none";
+        
+        // Add error handling for iframe loading
+        iframe.onerror = () => {
+          console.error("Failed to load SoundCloud iframe");
+          initializeFallback();
+          clearTimeout(loadTimeoutId);
+        };
+        
+        document.body.appendChild(iframe);
+        iframeRef.current = iframe;
+      }
+    } catch (error) {
+      console.error("Error setting up SoundCloud player:", error);
+      initializeFallback();
+      clearTimeout(loadTimeoutId);
     }
     
     const initializeWidget = () => {
       if (iframeRef.current && window.SC) {
-        const widgetInstance = window.SC.Widget(iframeRef.current);
-        setWidget(widgetInstance);
-        
-        // Setup event listeners
-        widgetInstance.bind(window.SC.Widget.Events.READY, () => {
-          console.log('SoundCloud widget ready');
+        try {
+          const widgetInstance = window.SC.Widget(iframeRef.current);
+          setWidget(widgetInstance);
           
-          // Get tracks from playlist
-          widgetInstance.getSounds((playlist: any) => {
-            const trackList = playlist.map((sound: any) => {
-              // Format duration from milliseconds to MM:SS
-              const minutes = Math.floor(sound.duration / 60000);
-              const seconds = Math.floor((sound.duration % 60000) / 1000);
-              const formattedDuration = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          // Setup event listeners
+          widgetInstance.bind(window.SC.Widget.Events.READY, () => {
+            console.log('SoundCloud widget ready');
+            setApiLoaded(true);
+            clearTimeout(loadTimeoutId);
+            
+            // Get tracks from playlist
+            widgetInstance.getSounds((playlist: any) => {
+              try {
+                if (!playlist || playlist.length === 0) {
+                  throw new Error("Empty playlist returned");
+                }
+                
+                const trackList = playlist.map((sound: any) => {
+                  // Format duration from milliseconds to MM:SS
+                  const minutes = Math.floor(sound.duration / 60000);
+                  const seconds = Math.floor((sound.duration % 60000) / 1000);
+                  const formattedDuration = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                  
+                  return {
+                    title: sound.title || "Unknown Track",
+                    artist: sound.user?.username || 'Unknown Artist',
+                    duration: formattedDuration
+                  };
+                });
+                
+                setTracks(trackList);
+                
+                // Get current track info
+                widgetInstance.getCurrentSound((sound: any) => {
+                  if (sound) {
+                    updateCurrentTrackInfo(sound);
+                  }
+                });
+              } catch (error) {
+                console.error("Error processing playlist:", error);
+                initializeFallback();
+              }
+            });
+            
+            // Track playback progress
+            widgetInstance.bind(window.SC.Widget.Events.PLAY_PROGRESS, (e: any) => {
+              const seconds = Math.floor(e.currentPosition / 1000);
+              setCurrentTime(seconds);
+            });
+            
+            // Listen for track finish
+            widgetInstance.bind(window.SC.Widget.Events.FINISH, () => {
+              handleNext();
+            });
+            
+            // Listen for track changes
+            widgetInstance.bind(window.SC.Widget.Events.PLAY, () => {
+              setIsPlaying(true);
+              // Get current track info
+              widgetInstance.getCurrentSound((sound: any) => {
+                if (sound) {
+                  updateCurrentTrackInfo(sound);
+                }
+              });
               
-              return {
-                title: sound.title,
-                artist: sound.user?.username || 'Unknown Artist',
-                duration: formattedDuration
-              };
+              // Get current track index
+              widgetInstance.getCurrentSoundIndex((index: number) => {
+                setCurrentTrack(index);
+              });
             });
             
-            setTracks(trackList);
-            
-            // Get current track info
-            widgetInstance.getCurrentSound((sound: any) => {
-              if (sound) {
-                updateCurrentTrackInfo(sound);
-              }
+            widgetInstance.bind(window.SC.Widget.Events.PAUSE, () => {
+              setIsPlaying(false);
             });
           });
           
-          // Track playback progress
-          widgetInstance.bind(window.SC.Widget.Events.PLAY_PROGRESS, (e: any) => {
-            const seconds = Math.floor(e.currentPosition / 1000);
-            setCurrentTime(seconds);
+          // Handle widget error
+          widgetInstance.bind(window.SC.Widget.Events.ERROR, () => {
+            console.error("SoundCloud widget error");
+            initializeFallback();
           });
-          
-          // Listen for track finish
-          widgetInstance.bind(window.SC.Widget.Events.FINISH, () => {
-            handleNext();
-          });
-          
-          // Listen for track changes
-          widgetInstance.bind(window.SC.Widget.Events.PLAY, () => {
-            setIsPlaying(true);
-            // Get current track info
-            widgetInstance.getCurrentSound((sound: any) => {
-              if (sound) {
-                updateCurrentTrackInfo(sound);
-              }
-            });
-            
-            // Get current track index
-            widgetInstance.getCurrentSoundIndex((index: number) => {
-              setCurrentTrack(index);
-            });
-          });
-          
-          widgetInstance.bind(window.SC.Widget.Events.PAUSE, () => {
-            setIsPlaying(false);
-          });
-        });
+        } catch (error) {
+          console.error("Error initializing SoundCloud widget:", error);
+          initializeFallback();
+          clearTimeout(loadTimeoutId);
+        }
       }
     };
     
@@ -162,9 +262,46 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
     
     // Cleanup function
     return () => {
-      // We don't remove the iframe or script since we want the player to persist
+      clearTimeout(loadTimeoutId);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
   }, []);
+  
+  // Simulate playback when using fallback
+  useEffect(() => {
+    if (apiError && isPlaying) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      
+      timerRef.current = setInterval(() => {
+        setCurrentTime(prev => {
+          const duration = parseDuration(currentTrackInfo.duration);
+          if (prev >= duration - 1) {
+            handleNext();
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    } else if (apiError && !isPlaying && timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [apiError, isPlaying, currentTrackInfo]);
+  
+  // Helper to parse duration string to seconds
+  const parseDuration = (duration: string): number => {
+    const [minutes, seconds] = duration.split(':').map(Number);
+    return minutes * 60 + seconds;
+  };
   
   // Update current track information
   const updateCurrentTrackInfo = (sound: any) => {
@@ -173,7 +310,7 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
     const formattedDuration = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     
     setCurrentTrackInfo({
-      title: sound.title,
+      title: sound.title || "Unknown Track",
       artist: sound.user?.username || 'Unknown Artist',
       duration: formattedDuration
     });
@@ -181,7 +318,10 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   
   // Toggle play/pause
   const togglePlay = () => {
-    if (widget) {
+    if (apiError) {
+      // Handle fallback playback
+      setIsPlaying(!isPlaying);
+    } else if (widget) {
       if (isPlaying) {
         widget.pause();
       } else {
@@ -192,7 +332,15 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   
   // Previous track
   const handlePrev = () => {
-    if (widget) {
+    if (apiError) {
+      // Handle fallback navigation
+      setCurrentTime(0);
+      setCurrentTrack(prev => {
+        const newTrack = prev === 0 ? fallbackTracks.length - 1 : prev - 1;
+        setCurrentTrackInfo(fallbackTracks[newTrack]);
+        return newTrack;
+      });
+    } else if (widget) {
       widget.prev();
       setCurrentTime(0);
     }
@@ -200,7 +348,15 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   
   // Next track
   const handleNext = () => {
-    if (widget) {
+    if (apiError) {
+      // Handle fallback navigation
+      setCurrentTime(0);
+      setCurrentTrack(prev => {
+        const newTrack = (prev + 1) % fallbackTracks.length;
+        setCurrentTrackInfo(fallbackTracks[newTrack]);
+        return newTrack;
+      });
+    } else if (widget) {
       widget.next();
       setCurrentTime(0);
     }
@@ -217,7 +373,8 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
         handlePrev,
         handleNext,
         playerVisible,
-        setPlayerVisible
+        setPlayerVisible,
+        apiLoaded
       }}
     >
       {children}
