@@ -1,13 +1,18 @@
+'use client';
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
+  const [playerVisible, setPlayerVisible] = useState(true);
+  
   return (
     <div className="min-h-screen p-8 flex flex-col items-center justify-center noise-texture crt-overlay relative">
       <div className="max-w-3xl w-full flex flex-col gap-8 items-center">
         <div className="text-center retro-frame relative">
           <h1 className="vapor-text text-5xl font-bold mb-2">Vibe Code Buddy</h1>
-          <p className="retro-pixel uppercase tracking-widest mb-1 text-pooldark dark:text-poolbeige">PFM LEISURE ENHANCER</p>
+          <p className="retro-pixel uppercase tracking-widest mb-1 text-pooldark dark:text-poolbeige">SOFTWARE COMPOSER ENHANCER</p>
           <span className="version-tag">v2.01</span>
           <div className="retro-lines">
             <p className="text-xl text-pooldark dark:text-poolbeige mb-8">A modern code structure visualization tool</p>
@@ -36,6 +41,35 @@ export default function Home() {
           <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
         </svg>
       </Link>
+      
+      {/* Music Player */}
+      {playerVisible && (
+        <div className="music-player">
+          <div className="music-player-header">
+            <div className="music-player-title">VIBE CODE FM</div>
+            <button className="music-player-close" onClick={() => setPlayerVisible(false)}>×</button>
+          </div>
+          
+          <div className="music-player-visualization"></div>
+          
+          <div className="music-player-channel">
+            <div>Vibe Code FM (Default)</div>
+            <div>▼</div>
+          </div>
+          
+          <div className="music-player-time">... / 04:52</div>
+          <div className="music-player-track">Com Truise - Ultrafiche</div>
+          <div className="music-player-artist">Iteration</div>
+          
+          <div className="music-player-controls">
+            <button className="music-player-button">◂◂</button>
+            <button className="music-player-button">▶</button>
+            <button className="music-player-button">▸▸</button>
+          </div>
+          
+          <div className="dots-pattern"></div>
+        </div>
+      )}
     </div>
   );
 }
