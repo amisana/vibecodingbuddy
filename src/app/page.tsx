@@ -16,11 +16,11 @@ export default function Home() {
 
         <div className="p-6 border-2 border-poolpink-light rounded-xl w-full content-overlay">
           <h2 className="pixel-heading text-pooldark dark:text-poolbeige mb-4">ABOUT VIBE CODE BUDDY</h2>
-          <p className="text-pooldark dark:text-poolbeige mb-4">
+          <p className="pixel-body text-pooldark dark:text-poolbeige mb-4">
             Vibe Code Buddy is a modern, web-based tool designed to help you organize and document your code structure.
             With features like drag-and-drop file handling and markdown generation, Vibe Code Buddy makes documentation simple and intuitive.
           </p>
-          <p className="text-pooldark dark:text-poolbeige text-sm italic">
+          <p className="pixel-body text-pooldark dark:text-poolbeige text-sm italic">
             Built with Next.js and retrowave aesthetics for your coding pleasure.
           </p>
         </div>

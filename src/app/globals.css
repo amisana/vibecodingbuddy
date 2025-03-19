@@ -205,6 +205,14 @@ body {
   letter-spacing: 1px;
 }
 
+.pixel-body {
+  font-family: var(--font-pixel, monospace);
+  font-size: 0.55em;
+  line-height: 1.8;
+  letter-spacing: 0;
+  word-spacing: 0.1em;
+}
+
 /* Vaporwave button styling */
 .vapor-button {
   position: relative;

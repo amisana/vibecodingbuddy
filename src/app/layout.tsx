@@ -38,26 +38,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} antialiased`}
       >
-        <header className="fixed top-0 w-full z-10 backdrop-blur-sm">
-          <div className="max-w-screen-xl mx-auto px-4 h-16 flex items-center justify-between border-b-2 border-poolpink content-overlay">
-            <Link href="/" className="pixel-heading text-pooldark dark:text-poolbeige">
-              VIBE CODE BUDDY
-            </Link>
-            <nav>
-              <ul className="flex gap-4">
-                <li>
-                  <Link href="/" className="hover:text-poolteal transition-colors pixel-heading text-sm">HOME</Link>
-                </li>
-                <li>
-                  <Link href="/copier" className="hover:text-poolteal transition-colors pixel-heading text-sm">FILE COPIER</Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
-        <div className="pt-16">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );
