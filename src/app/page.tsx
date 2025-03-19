@@ -11,7 +11,7 @@ export default function Home() {
           <p className="retro-pixel uppercase tracking-widest mb-1 text-pooldark dark:text-poolbeige">SOFTWARE COMPOSER ENHANCER</p>
           <span className="version-tag">v2.01</span>
           <div className="retro-lines">
-            <p className="text-xl text-pooldark dark:text-poolbeige mb-8">A modern code structure visualization tool</p>
+            <p className="text-xl text-pooldark dark:text-poolbeige mb-8 retro-pixel">by Cameron Kiani, MD</p>
           </div>
         </div>
 

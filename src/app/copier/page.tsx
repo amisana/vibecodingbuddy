@@ -682,7 +682,7 @@ export default function CopierPage() {
     <div className="min-h-screen p-4 sm:p-6 flex flex-col items-center noise-texture crt-overlay">
       <div className="max-w-3xl w-full flex flex-col gap-4 items-center">
         <h1 className="pixel-heading text-pooldark dark:text-poolbeige text-xl">VIBE CODE BUDDY</h1>
-        <p className="text-pooldark dark:text-poolbeige mb-5 text-center max-w-3xl">
+        <p className="text-pooldark dark:text-poolbeige mb-5 text-center max-w-3xl retro-pixel">
           Convert your project files into a single, well-formatted markdown document for sharing or LLM analysis
         </p>
         
@@ -701,7 +701,7 @@ export default function CopierPage() {
               </div>
               <div className="flex items-center">
                 {rootDirectory && (
-                  <span className="text-xs bg-poolbeige dark:bg-pooldark/40 text-poolteal dark:text-poolteal border border-poolpink py-1 px-2 rounded-full mr-2">
+                  <span className="text-xs bg-poolbeige dark:bg-pooldark/40 text-poolteal dark:text-poolteal border border-poolpink py-1 px-2 rounded-full mr-2 retro-pixel">
                     Completed
                   </span>
                 )}
@@ -718,7 +718,7 @@ export default function CopierPage() {
             
             {expandedSections.rootDirectory && (
               <div className="p-6 border-t">
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                <p className="text-gray-600 dark:text-gray-400 mb-6 retro-pixel">
                   First, select a root folder where files will be processed. This folder will be used as the reference point.
                 </p>
                 
@@ -734,14 +734,14 @@ export default function CopierPage() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Selecting...
+                        <span className="retro-pixel">Selecting...</span>
                       </>
                     ) : (
                       <>
                         <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                         </svg>
-                        Select Root Folder
+                        <span className="retro-pixel">Select Root Folder</span>
                       </>
                     )}
                   </button>
@@ -754,8 +754,8 @@ export default function CopierPage() {
                         </svg>
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium">{rootDirectory.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="font-medium retro-pixel">{rootDirectory.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 retro-pixel">
                           {isGenerating ? 'Scanning directory...' : 'Root folder selected'}
                           {files.length > 0 && ` (${files.length} files found)`}
                         </p>
@@ -792,7 +792,7 @@ export default function CopierPage() {
 
                     {/* Project Name Input */}
                     <div className="mt-4 mb-2">
-                      <label htmlFor="project-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label htmlFor="project-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 retro-pixel">
                         Project Name (Optional)
                       </label>
                       <input
@@ -801,16 +801,16 @@ export default function CopierPage() {
                         value={projectName}
                         onChange={(e) => setProjectName(e.target.value)}
                         placeholder="Enter a name for your project"
-                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-poolteal dark:bg-pooldark/30 dark:border-pooldark/70"
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-poolteal dark:bg-pooldark/30 dark:border-pooldark/70 retro-pixel"
                       />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 retro-pixel">
                         This will be displayed in the generated markdown document
                       </p>
                     </div>
                     
                     {/* Project Description Input */}
                     <div className="mt-4 mb-2">
-                      <label htmlFor="project-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label htmlFor="project-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 retro-pixel">
                         Project Description (Optional)
                       </label>
                       <textarea
@@ -819,14 +819,14 @@ export default function CopierPage() {
                         onChange={(e) => setProjectDescription(e.target.value)}
                         placeholder="Enter a brief description of your project"
                         rows={3}
-                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-poolteal dark:bg-pooldark/30 dark:border-pooldark/70"
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-poolteal dark:bg-pooldark/30 dark:border-pooldark/70 retro-pixel"
                       />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 retro-pixel">
                         A short description that will appear in the markdown output
                       </p>
                     </div>
                     
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 retro-pixel">
                       {isGenerating 
                         ? 'Scanning directory... This may take a while for large directories.' 
                         : 'Directory has been scanned. You can adjust ignore patterns in step 3 to filter files.'}
@@ -854,12 +854,12 @@ export default function CopierPage() {
               </div>
               <div className="flex items-center">
                 {files.length > 0 && (
-                  <span className="text-xs bg-poolbeige dark:bg-pooldark/40 text-poolteal dark:text-poolteal border border-poolpink py-1 px-2 rounded-full mr-2">
+                  <span className="text-xs bg-poolbeige dark:bg-pooldark/40 text-poolteal dark:text-poolteal border border-poolpink py-1 px-2 rounded-full mr-2 retro-pixel">
                     {files.length} files
                   </span>
                 )}
                 {!rootDirectory && (
-                  <span className="text-xs bg-poolbeige/50 dark:bg-pooldark/40 text-pooldark/60 dark:text-poolbeige/60 py-1 px-2 rounded-full mr-2 border border-poolpink-light/50">
+                  <span className="text-xs bg-poolbeige/50 dark:bg-pooldark/40 text-pooldark/60 dark:text-poolbeige/60 py-1 px-2 rounded-full mr-2 border border-poolpink-light/50 retro-pixel">
                     Locked
                   </span>
                 )}
@@ -906,7 +906,7 @@ export default function CopierPage() {
                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" 
                           />
                         </svg>
-                        <p className="text-lg font-medium mb-2">
+                        <p className="text-lg font-medium mb-2 retro-pixel">
                           {!rootDirectory 
                             ? 'Select a root folder first' 
                             : isDragging 
@@ -914,16 +914,16 @@ export default function CopierPage() {
                               : 'Drag & drop files or folders here'
                           }
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 retro-pixel">
                           {rootDirectory ? 'Or select from your computer' : 'Complete step 1 to enable this section'}
                         </p>
                       </>
                     ) : (
                       <div className="flex justify-between items-center mb-3 w-full">
-                        <h3 className="font-medium text-gray-700 dark:text-gray-300">Selected Files ({files.length})</h3>
+                        <h3 className="font-medium text-gray-700 dark:text-gray-300 retro-pixel">Selected Files ({files.length})</h3>
                         <button 
                           onClick={clearFiles}
-                          className="text-sm text-red-500 hover:text-red-600 transition-colors"
+                          className="text-sm text-red-500 hover:text-red-600 transition-colors retro-pixel"
                         >
                           Clear All
                         </button>
@@ -947,10 +947,10 @@ export default function CopierPage() {
                               </svg>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="truncate font-medium">{item.path}</p>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                              <p className="truncate font-medium retro-pixel">{item.path}</p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 retro-pixel">
                                 {formatFileSize(item.file.size)}
-                                {shouldIgnoreFile(item.path) && <span className="ml-2 text-yellow-500">(Ignored)</span>}
+                                {shouldIgnoreFile(item.path) && <span className="ml-2 text-yellow-500 retro-pixel">(Ignored)</span>}
                               </p>
                             </div>
                           </div>
@@ -961,7 +961,7 @@ export default function CopierPage() {
                     {rootDirectory && (
                       <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <label className="cursor-pointer bg-poolteal hover:bg-poolteal/80 text-white py-2 px-4 rounded-md transition-colors inline-flex items-center justify-center vapor-button">
-                          <span>{files.length > 0 ? 'Add More Files' : 'Select Files'}</span>
+                          <span className="retro-pixel">{files.length > 0 ? 'Add More Files' : 'Select Files'}</span>
                           <input 
                             type="file" 
                             multiple 
@@ -970,7 +970,7 @@ export default function CopierPage() {
                           />
                         </label>
                         <label className="cursor-pointer bg-transparent hover:bg-poolbeige dark:hover:bg-pooldark/40 border border-poolpink-light text-pooldark dark:text-poolbeige py-2 px-4 rounded-md transition-colors inline-flex items-center justify-center">
-                          <span>{files.length > 0 ? 'Add Folder' : 'Select Folder'}</span>
+                          <span className="retro-pixel">{files.length > 0 ? 'Add Folder' : 'Select Folder'}</span>
                           <input 
                             type="file" 
                             directory=""
@@ -1005,12 +1005,12 @@ export default function CopierPage() {
               </div>
               <div className="flex items-center">
                 {ignorePatterns.length > 0 && (
-                  <span className="text-xs bg-poolbeige dark:bg-pooldark/40 text-poolteal dark:text-poolteal border border-poolpink py-1 px-2 rounded-full mr-2">
+                  <span className="text-xs bg-poolbeige dark:bg-pooldark/40 text-poolteal dark:text-poolteal border border-poolpink py-1 px-2 rounded-full mr-2 retro-pixel">
                     {ignorePatterns.length} patterns
                   </span>
                 )}
                 {!rootDirectory && (
-                  <span className="text-xs bg-poolbeige/50 dark:bg-pooldark/40 text-pooldark/60 dark:text-poolbeige/60 py-1 px-2 rounded-full mr-2 border border-poolpink-light/50">
+                  <span className="text-xs bg-poolbeige/50 dark:bg-pooldark/40 text-pooldark/60 dark:text-poolbeige/60 py-1 px-2 rounded-full mr-2 border border-poolpink-light/50 retro-pixel">
                     Locked
                   </span>
                 )}
@@ -1027,7 +1027,7 @@ export default function CopierPage() {
             
             {expandedSections.ignorePatterns && rootDirectory && (
               <div className="p-6 border-t">
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-gray-600 dark:text-gray-400 mb-4 retro-pixel">
                   Specify patterns for files and folders to exclude from the output. Uses similar syntax to .gitignore files.
                 </p>
                 
@@ -1037,27 +1037,27 @@ export default function CopierPage() {
                     value={ignoreInput}
                     onChange={(e) => setIgnoreInput(e.target.value)}
                     placeholder="E.g., node_modules/, *.log"
-                    className="flex-1 px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-poolteal dark:bg-pooldark/30 dark:border-pooldark/70"
+                    className="flex-1 px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-poolteal dark:bg-pooldark/30 dark:border-pooldark/70 retro-pixel"
                     onKeyPress={(e) => e.key === 'Enter' && addIgnorePattern()}
                   />
                   <button
                     onClick={addIgnorePattern}
                     className="px-4 py-2 bg-poolteal text-white rounded-r-md hover:bg-poolteal/80 transition-colors"
                   >
-                    Add
+                    <span className="retro-pixel">Add</span>
                   </button>
                 </div>
                 
                 {ignorePatterns.length > 0 && (
                   <div className="mb-4">
-                    <p className="font-medium mb-2">Current ignore patterns:</p>
+                    <p className="font-medium mb-2 retro-pixel">Current ignore patterns:</p>
                     <div className="flex flex-wrap gap-2">
                       {ignorePatterns.map((pattern, index) => (
                         <div 
                           key={index} 
                           className="flex items-center bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full"
                         >
-                          <span className="text-sm">{pattern}</span>
+                          <span className="text-sm retro-pixel">{pattern}</span>
                           <button
                             onClick={() => removeIgnorePattern(pattern)}
                             className="ml-2 text-gray-500 hover:text-red-500"
@@ -1092,7 +1092,7 @@ export default function CopierPage() {
                 </div>
                 <div className="flex items-center">
                   {markdown && (
-                    <span className="text-xs bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 py-1 px-2 rounded-full mr-2">
+                    <span className="text-xs bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 py-1 px-2 rounded-full mr-2 retro-pixel">
                       Generated
                     </span>
                   )}
@@ -1109,7 +1109,7 @@ export default function CopierPage() {
               
               {expandedSections.generate && (
                 <div className="p-6 border-t">
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  <p className="text-gray-600 dark:text-gray-400 mb-6 retro-pixel">
                     Create a well-formatted markdown document containing your selected files with proper structure and syntax highlighting.
                   </p>
                   
@@ -1127,14 +1127,14 @@ export default function CopierPage() {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
-                          Generating...
+                          <span className="retro-pixel">Generating...</span>
                         </>
                       ) : (
                         <>
                           <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                           </svg>
-                          Generate Markdown
+                          <span className="retro-pixel">Generate Markdown</span>
                         </>
                       )}
                     </button>
@@ -1143,7 +1143,7 @@ export default function CopierPage() {
                   {markdown && (
                     <div className="mt-6">
                       <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold">Generated Markdown</h3>
+                        <h3 className="text-lg font-semibold retro-pixel">Generated Markdown</h3>
                           <div className="flex gap-2">
                             <button
                               onClick={copyToClipboard}
@@ -1152,7 +1152,7 @@ export default function CopierPage() {
                               <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                               </svg>
-                              Copy
+                              <span className="retro-pixel">Copy</span>
                             </button>
                             <button
                               onClick={downloadMarkdown}
@@ -1161,7 +1161,7 @@ export default function CopierPage() {
                               <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                               </svg>
-                              Download
+                              <span className="retro-pixel">Download</span>
                             </button>
                           </div>
                       </div>
@@ -1170,7 +1170,7 @@ export default function CopierPage() {
                           ref={markdownRef}
                           value={markdown}
                           readOnly
-                          className="w-full h-96 p-4 font-mono text-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 resize-none"
+                          className="w-full h-96 p-4 font-mono text-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 resize-none retro-pixel"
                         />
                       </div>
                     </div>
