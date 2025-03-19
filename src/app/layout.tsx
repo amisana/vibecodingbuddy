@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Dancing_Script } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { MusicPlayerProvider } from "./components/MusicPlayerContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} antialiased`}
       >
-        {children}
+        <MusicPlayerProvider>
+          {children}
+        </MusicPlayerProvider>
       </body>
     </html>
   );
