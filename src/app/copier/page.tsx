@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-// Remove unused Image import since we're using inline SVGs
-// import Image from 'next/image';
+// Remove the Image import completely, not just comment it out
 
 type FileItem = {
   file: File;
@@ -238,13 +237,18 @@ export default function CopierPage() {
     }
   }, [rootDirectory, scanDirectory]);
 
+  // Use this interface for showDirectoryPicker in window
+  interface WindowWithFS extends Window {
+    showDirectoryPicker(options: FileSystemDirectoryPickerOptions): Promise<FileSystemDirectoryHandle>;
+  }
+
   // Update the select root directory to scan automatically
   const selectRootDirectory = useCallback(async () => {
     try {
       // Check if the File System Access API is supported
       if ('showDirectoryPicker' in window) {
         // Properly typed window object with showDirectoryPicker
-        const win = window as unknown as Window;
+        const win = window as unknown as WindowWithFS;
         const directoryHandle = await win.showDirectoryPicker({
           mode: 'readwrite',
         });
@@ -405,6 +409,7 @@ export default function CopierPage() {
         
         // Add each file as a leaf node
         dirFiles.forEach(file => {
+          // Get the file name from the path
           const fileName = file.path.split('/').pop() || file.path;
           parentNode.children.push({
             name: fileName,
