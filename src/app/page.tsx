@@ -1,12 +1,8 @@
-'use client';
-
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import MusicPlayer from "./components/MusicPlayer";
 
 export default function Home() {
-  const [playerVisible, setPlayerVisible] = useState(true);
-  
   return (
     <div className="min-h-screen p-8 flex flex-col items-center justify-center noise-texture crt-overlay relative">
       <div className="max-w-3xl w-full flex flex-col gap-8 items-center">
@@ -42,34 +38,8 @@ export default function Home() {
         </svg>
       </Link>
       
-      {/* Music Player */}
-      {playerVisible && (
-        <div className="music-player">
-          <div className="music-player-header">
-            <div className="music-player-title">VIBE CODE FM</div>
-            <button className="music-player-close" onClick={() => setPlayerVisible(false)}>×</button>
-          </div>
-          
-          <div className="music-player-visualization"></div>
-          
-          <div className="music-player-channel">
-            <div>Vibe Code FM (Default)</div>
-            <div>▼</div>
-          </div>
-          
-          <div className="music-player-time">... / 04:52</div>
-          <div className="music-player-track">Com Truise - Ultrafiche</div>
-          <div className="music-player-artist">Iteration</div>
-          
-          <div className="music-player-controls">
-            <button className="music-player-button">◂◂</button>
-            <button className="music-player-button">▶</button>
-            <button className="music-player-button">▸▸</button>
-          </div>
-          
-          <div className="dots-pattern"></div>
-        </div>
-      )}
+      {/* Music Player - Moved to a client component */}
+      <MusicPlayer />
     </div>
   );
 }
