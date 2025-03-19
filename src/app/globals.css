@@ -274,3 +274,35 @@ body {
   word-spacing: 0.2em;
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
 }
+
+/* Floating action button with retro effects */
+.float-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-pink) 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.2),
+    0 0 0 3px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  z-index: 50;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.float-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 4px rgba(255, 255, 255, 0.2);
+}
