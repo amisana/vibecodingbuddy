@@ -527,3 +527,15 @@ body {
 .equalizer-bar:nth-child(22) { animation-delay: -0.2s; }
 .equalizer-bar:nth-child(23) { animation-delay: -0.5s; }
 .equalizer-bar:nth-child(24) { animation-delay: -0.8s; }
+
+.music-player-error {
+  font-size: 0.55rem;
+  color: #ff0000;
+  text-align: center;
+  margin: 0.25rem 0 0.5rem;
+  font-family: var(--font-pixel);
+}
+
+.hidden {
+  display: none;
+}
