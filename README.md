@@ -1,16 +1,19 @@
-# Vibe Coding Buddy
+# Vibe Code Buddy
 
 ## Overview
 
-Vibe Coding Buddy is a modern web application that converts your project files into a single, well-formatted markdown document. This makes it easy to:
+Vibe Code Buddy is a modern web application with a retro vaporwave aesthetic that converts your project files into a single, well-formatted markdown document. This makes it easy to:
 
 - Share your code structure with others
 - Prepare your codebase for analysis by LLMs (Large Language Models)
 - Create documentation that shows both file organization and content
 - Review code in a consolidated format
 
+The application is available at [copycode.ai](https://copycode.ai)
+
 ## Features
 
+### Code Documentation
 - **Root Directory Selection**: Securely select a local project folder
 - **Automatic File Scanning**: Recursively scans the entire directory structure
 - **Customizable Ignore Patterns**: Filter out files and folders using gitignore-like syntax
@@ -18,6 +21,15 @@ Vibe Coding Buddy is a modern web application that converts your project files i
 - **Directory Tree Visualization**: See your project structure in a clear tree format
 - **Syntax Highlighting**: Code is formatted with proper language-specific highlighting
 - **Markdown Export**: Copy or download the generated markdown
+
+### UI & Experience
+- **Retro Vaporwave Design**: Features a nostalgic 80s/90s retrowave aesthetic
+- **Integrated Music Player**: Built-in SoundCloud-powered music player with fallback mode
+  - Plays curated synthwave/vaporwave tracks
+  - Minimizable interface
+  - Offline mode when SoundCloud API is unavailable
+- **CRT Overlay Effect**: Authentic retro screen effects
+- **Pixel-Perfect Typography**: Uses "Press Start 2P" font for authentic retro text display
 
 ## How It Works
 
@@ -42,6 +54,7 @@ Built with:
 - TypeScript
 - Tailwind CSS 4
 - File System Access API for secure local file access
+- SoundCloud Widget API for music integration
 
 ## Getting Started
 
